@@ -1,0 +1,50 @@
+{
+    "name": "server-explorer",
+    // Sets the run context to one level up instead of the .devcontainer folder.
+    "context": "..",
+    // Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+    "dockerFile": "../Dockerfile",
+    "settings": {
+		"editor.rulers": [
+			120
+		],
+		"files.trimFinalNewlines": true,
+		"files.trimTrailingWhitespace": true,
+		"files.insertFinalNewline": true,
+		"isort.args": [
+			"--settings-path=/app/pyproject.toml"
+		],
+		"python.formatting.blackArgs": [
+			"--config=/app/pyproject.toml"
+		],
+		"editor.formatOnSave": true,
+		"[python]": {
+			"editor.defaultFormatter": "ms-python.black-formatter",
+			"editor.formatOnSave": true,
+			"editor.codeActionsOnSave": {
+				"source.organizeImports": true
+			}
+		}
+	},
+    // Add the IDs of extensions you want installed when the container is created.
+    "extensions": [
+		"ms-python.python",
+		"eamodio.gitlens",
+		"ms-python.vscode-pylance",
+		"ms-python.isort",
+		"ms-python.black-formatter",
+		"tamasfe.even-better-toml",
+		"foxundermoon.shell-format",
+		"GitHub.vscode-github-actions",
+		"mhutchie.git-graph",
+		"GitHub.copilot"
+	],
+    // Change USERPROFILE to HOME if you are using a linux-based computer
+    "mounts": [
+        "source=${localEnv:USERPROFILE}/.aws,target=/root/.aws,type=bind",
+        "source=${localEnv:USERPROFILE}/.gitconfig,target=/etc/gitconfig,type=bind,consistency=delegated",
+		"source=${devcontainerId:name}-bashhistory,target=/commandhistory,type=volume"
+    ],
+    "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind,consistency=delegated",
+    "workspaceFolder": "/app"
+}
