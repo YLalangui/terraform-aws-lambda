@@ -4,7 +4,7 @@ In this documentation, we'll guide you through the entire process of working wit
 
 # 1. Repository structure
 ### Devcontainer
-We'll go through what's in this repository, step by step. We started by developing the lambda in a separate, containerized space using devcontainer. The file `.devcontainer/devcontainer.json` shows the setup we used to begin making our lambda. This setup is really helpful because it comes with some great tools already included, even python libraries which our lambda will use. For instance, whenever you save a file with `ctrl+s`, tools like `isort` and `black` automatically format your code. Inside devcontainer, you can also add extras like Git connections, tools to tidy up terraform files, or even GitHub Copilot. And you don't have to worry about AWS credentials; they're securely included in our container through the "mounts" section, which helps keep everything safe and leak-free.
+We'll go through what's in this repository, step by step. We started by developing the lambda in a separate, containerized space using devcontainer. The file `.devcontainer/devcontainer.json` shows the setup we used to begin making our lambda. This setup is really helpful because it comes with some great tools already included, even python libraries which our lambda will use. For instance, whenever you save a file with `ctrl+s`, tools like `isort` and `black` automatically format your code. Inside devcontainer, you can also add extras like Git connections, tools to tidy up terraform files, or even GitHub Copilot. And you don't have to worry about AWS credentials; they're securely included in our container through the "mounts" section (AWS credentials are kept in the local machine), which helps keep everything safe and leak-free.
 
 ### Github Actions
 We've set up CI/CD pipelines to manage the lambda in AWS, making it easy to put it up and take it down when needed. There's a `deploy.yaml` file that does two things: it first runs automated tests, and if those tests pass, it goes ahead with the deployment. Also, we have a `destroy.yaml` file that's used to remove the lambda from our AWS environment.
@@ -21,11 +21,11 @@ In this folder, you'll find the code for our lambda. This lambda is designed to 
 
 ### terraform folder
 
-In this section, there's just one file, `main.tf`, that outlines our resources and infrastructure using code. It's straightforward as it only sets up two things: the backend (where we'll use S3 as a remote backend to store our infrastructure's state) and the lambda function itself. This file is essential for both the GitHub Actions deployment process and the manual deployment found in the `deploy_lambda` folder.
+In this section, there's just one file, `main.tf`, that outlines our resources and infrastructure using code. It's straightforward as it only sets up two things: the backend (where we'll use S3 as a remote backend to store our infrastructure's state) and the lambda function itself. This file is used by both the GitHub Actions deployment process and the manual deployment found in the `deploy_lambda` folder.
 
 ### test folder
 
-To fully understand and manage our code's lifecycle, it's important to include at least one test. Although it might be a basic test, it's designed to simulate the creation of an AWS EC2 instance. This way, we can check that our lambda functions as intended by testing it with various inputs and expected outputs. This approach helps us cover the simplest scenarios effectively. This code is run by GitHub Actions to check the lambda. If the test passes, then the lambda will be deployed on AWS.
+To fully understand and manage our code's lifecycle, it's important to include at least one test. Although it might be a basic test, it's designed to simulate the creation of an AWS EC2 instance and test the lambda functionality. This way, we can check that our lambda functions as intended by testing it with various inputs and expected outputs. This approach helps us cover the simplest scenarios effectively. This code is run by GitHub Actions to check the lambda. If the test passes, then the lambda will be deployed on AWS.
 
 ### The "rest" of the scripts
 
@@ -33,7 +33,7 @@ We should also talk about some other key files located at the project's root. On
 
 # 2. How to execute the lambda locally
 
-When working with `devcontainer`, it's important to ensure your AWS credentials have the right permissions, at least for listing EC2 servers. This is because, as mentioned earlier, the `devcontainer` environment uses the credentials stored in your local `.aws` folder. You don't need a specific role at this stage since the lambda is run locally. Once your credentials are set up, you're ready to run the lambda. If you're using VSCode, setting up a devcontainer is straightforward – just click on `Reopen in Container`. After you're in the devcontainer, you can proceed to execute:
+When working with `devcontainer`, it's important to ensure your AWS credentials have the right permissions, at least for listing EC2 servers. This is because, as mentioned earlier, the `devcontainer` environment uses the credentials stored in your local `.aws` folder. You don't need a specific role at this stage since the lambda is run locally. Once your credentials are set up, you're ready to run the lambda. If you're using VSCode, setting up a devcontainer is straightforward – just click on `Reopen in Container`. After you're in the devcontainer, you can proceed to open a new terminal and execute:
 ````
 cd invoke_lambda
 python invoke_lambda_locally.py event.json
