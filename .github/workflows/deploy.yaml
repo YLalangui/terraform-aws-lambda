@@ -9,14 +9,14 @@ env:
   AWS_DEFAULT_REGION: "eu-central-1"
 
 jobs:
-  test:
+  test-lambda-function:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.10
+        python-version: '3.10'
 
     - name: Install Poetry
       run: |
@@ -30,7 +30,7 @@ jobs:
       run: pytest
 
   deploy-lambda-function:
-    needs: test
+    needs: test-lambda-function
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -38,7 +38,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.10'  # Ensure this matches your Lambda's runtime
+        python-version: '3.10'
 
     - name: Install Poetry
       run: |
