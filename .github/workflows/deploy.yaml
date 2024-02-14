@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies using Poetry
       run: |
         poetry config virtualenvs.create false
-        poetry install --no-root
+        poetry install
     - name: Run tests with pytest
       run: pytest
 
@@ -47,7 +47,7 @@ jobs:
     - name: Install dependencies using Poetry
       run: |
         poetry config virtualenvs.create false
-        poetry install --without dev --no-root
+        poetry install --without dev
 
     - name: Package Lambda function and dependencies
       run: |
