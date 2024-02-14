@@ -2,3 +2,4 @@
 .terraform.lock.hcl
 lambda_function.zip
 requirements.txt
+.pytest_cache

@@ -29,4 +29,4 @@ COPY pyproject.toml pyproject.toml
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install poetry
 
-RUN poetry config virtualenvs.create false && poetry install --only main --no-root
+RUN poetry config virtualenvs.create false && poetry install --no-root
