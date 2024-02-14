@@ -1,7 +1,9 @@
 import json
 import sys
 
-from src.app import server_explorer
+import boto3
+
+lambda_client = boto3.client('lambda')
 
 
 def load_test_event(json_file_path):
@@ -14,23 +16,18 @@ def load_test_event(json_file_path):
 
 
 if len(sys.argv) < 2:
-    print("ERROR: json path missing. Example: python invoke_lambda-locally.py event.json")
+    print("ERROR: json path missing. Example: python invoke_lambda-remote.py event.json")
     sys.exit(1)
 
 json_file_path = sys.argv[1]
 test_event = load_test_event(json_file_path)
 
+response = lambda_client.invoke(
+    FunctionName='server-explorer-function', InvocationType='RequestResponse', Payload=json.dumps(test_event)
+)
 
-class DummyContext:
-    def __init__(self):
-        self.function_name = "server_explorer"
-        self.memory_limit_in_mb = 128
-        self.invoked_function_arn = "arn:aws:lambda:eu-central-1:123456789012:function:server_explorer"
-        self.aws_request_id = "dummy_request_id"
-
-
-response = server_explorer(test_event, DummyContext())
-output = json.loads(response['body'])
+response = json.loads(response['Payload'].read().decode('utf-8'))['body']
+output = json.loads(response)
 
 print('################## SERVERS ##################')
 print(output['servers'])

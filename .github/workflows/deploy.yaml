@@ -1,0 +1,50 @@
+name: Deploy Lambda Function
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'  # Ensure this matches your Lambda's runtime
+
+    - name: Install Poetry
+      run: |
+        pip install poetry
+
+    - name: Install dependencies using Poetry
+      run: |
+        poetry config virtualenvs.create false
+        poetry install --no-dev
+
+    - name: Package Lambda function and dependencies
+      run: |
+        mkdir -p package
+        poetry export -f requirements.txt --output package/requirements.txt --without-hashes
+        pip install -r package/requirements.txt --target package
+        cp -R src/* package/
+        cd package && zip -r ../lambda_function.zip . && cd ..
+        rm -rf package
+
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.7.3
+
+    - name: Terraform Init
+      working-directory: ./terraform
+      run: terraform init
+
+    - name: Terraform Apply
+      working-directory: ./terraform
+      run: terraform apply -auto-approve
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: eu-central-1

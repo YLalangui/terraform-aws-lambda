@@ -37,7 +37,8 @@
 		"foxundermoon.shell-format",
 		"GitHub.vscode-github-actions",
 		"mhutchie.git-graph",
-		"GitHub.copilot"
+		"GitHub.copilot",
+		"4ops.terraform"
 	],
     // Change USERPROFILE to HOME if you are using a linux-based computer
     "mounts": [
